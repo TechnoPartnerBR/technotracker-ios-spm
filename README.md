@@ -37,16 +37,27 @@ machine ios-sdk.technopartner.com.br
 
 ### Passo 3: Inicializar o SDK
 
-No codigo da sua aplicacao, importe o modulo e inicialize com a chave API fornecida:
+Importe o modulo e inicialize o SDK no `AppDelegate` utilizando `FinderManager`:
 
 ```swift
 import IoTracker
 
-// Na inicializacao do app (AppDelegate ou @main App)
-let config = IoTrackerConfiguration(
-    apiKey: "token-fornecido-pela-technopartner"
-)
-IoTracker.shared.setup(configuration: config)
+@main
+struct MyApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    var body: some Scene { WindowGroup { ContentView() } }
+}
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+        let config = IoTrackerConfiguration(apiKey: "token-fornecido-pela-technopartner")
+        FinderManager.shared.setup(configuration: config, launchOptions: launchOptions)
+        return true
+    }
+}
 ```
 
 #### Parametros de configuracao
@@ -55,63 +66,46 @@ IoTracker.shared.setup(configuration: config)
 |-----------|-----------|--------|
 | `apiKey` | Token criptografado (obrigatorio) | — |
 
-### Passo 4: Configurar SDK
-
-#### Registrar ID
+### Passo 4: Registrar ID da antena
 
 Antes de utilizar o SDK, é necessário registrar um ID de antena. O fluxo recomendado é verificar se um ID já foi registrado anteriormente e, caso não tenha sido, realizar o registro.
 
 **1. Verificar se o ID já está registrado**
 
 ```swift
-IoTracker.shared.isAntennaIdRegistered(onSuccess: { isRegistered in
-    if !isRegistered {
-        // Prosseguir com o registro
-    }
-}, onError: { error in
-    // Tratar erro
-})
+let registered = try await FinderManager.shared.isAntennaIdRegistered()
+if !registered {
+    // Prosseguir com o registro
+}
 ```
 
 **2. Gerar um seed e registrar o ID**
 
-Caso o ID ainda não esteja registrado, gere um seed e chame `registerId`. A forma preferencial de gerar o seed é via `antennaIdSeed(safeToken:)`:
+Caso o ID ainda não esteja registrado, gere um seed e chame `registerId`. A forma preferencial é via `antennaIdSeed(safeToken:)`:
 
 ```swift
-let seed = IoTracker.shared.antennaIdSeed(safeToken: "seu-safe-token")
-
-IoTracker.shared.registerId(seed: seed, onSuccess: {
-    // ID registrado com sucesso
-}, onError: { error in
-    // Tratar erro
-})
+let seed = antennaIdSeed(safeToken: "seu-safe-token")
+try await FinderManager.shared.registerId(seed: seed)
 ```
 
 Outros métodos disponíveis para geração de seed:
 
 ```swift
 // Via login
-let seed = IoTracker.shared.antennaIdSeed(login: "usuario@email.com")
+let seed = antennaIdSeed(login: "usuario@email.com")
 
 // Via UUID
-let seed = IoTracker.shared.antennaIdSeed(uuid: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
+let seed = antennaIdSeed(uuid: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
 
 // Aleatório
-let seed = IoTracker.shared.randomAntennaIdSeed()
+let seed = randomAntennaIdSeed()
 ```
 
 **3. Obter o ID registrado**
 
-Após o registro, utilize `getAntennaId` para obter o ID. Enquanto o ID não for resolvido, o valor retornado será `0`.
-
 ```swift
-IoTracker.shared.getAntennaId(onSuccess: { id in
-    if id != 0 {
-        print("Antenna ID: \(id)")
-    }
-}, onError: { error in
-    // Tratar erro
-})
+let antennaId: UInt64 = try await FinderManager.shared.getAntennaId()
+print("Antenna ID: \(antennaId)")
 ```
 
 ## Suporte
