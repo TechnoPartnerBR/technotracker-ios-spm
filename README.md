@@ -27,7 +27,7 @@ machine ios-sdk.technopartner.com.br
 1. No Xcode, acesse **File > Add Package Dependencies...**
 2. Insira a URL do repositorio:
    ```
-   https://github.com/TechnoPartnerBR/technotracker-ios-spm.git
+   https://github.com/TechnoPartnerBR/technotracker-spm.git
    ```
 3. Em **Dependency Rule** selecione **"Branch"** e insira `main`
 4. Clique em **Add Package**
