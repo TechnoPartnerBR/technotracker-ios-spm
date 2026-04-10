@@ -4,7 +4,7 @@ SDK de rastreamento e telemetria da TechnoPartner para aplicativos iOS.
 
 ## Requisitos
 
-- iOS 15.0+
+- iOS 14.0+
 - Xcode 14.0+
 - Swift 5.7+
 

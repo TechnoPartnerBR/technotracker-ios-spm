@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "IoTracker",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v14)
     ],
     products: [
         .library(
@@ -34,8 +34,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "IoTracker",
-            url: "https://spm-sdk.technopartner.com.br/IoTracker/2.1.0/IoTracker.xcframework.zip",
-            checksum: "eea6d6ca2939691d2fc7936a328df3a2568c069a37a01fdb9e4b0bdf74854a80"
+            url: "https://spm-sdk.technopartner.com.br/IoTracker/2.1.1/IoTracker.xcframework.zip",
+            checksum: "db1afbebbce8a05ae24b7aec33543042ead1e721447eff6772c6f9ee8bf0db9c"
         ),
         .target(
             name: "IoTrackerDependencies",
