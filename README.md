@@ -15,7 +15,7 @@ SDK de rastreamento e telemetria da TechnoPartner para aplicativos iOS.
 O download do SDK requer autenticacao. Crie o arquivo `~/.netrc` no seu diretorio home com as credenciais fornecidas pela TechnoPartner:
 
 ```
-machine ios-sdk.technopartner.com.br
+machine spm-sdk.technopartner.com.br
   login <usuario-fornecido>
   password <senha-fornecida>
 ```
@@ -107,6 +107,35 @@ let seed = randomAntennaIdSeed()
 let antennaId: UInt64 = try await FinderManager.shared.getAntennaId()
 print("Antenna ID: \(antennaId)")
 ```
+
+### Passo 5: Verificar e solicitar permissões
+
+O SDK oferece APIs para verificar e solicitar as permissões de Localização e Bluetooth. Todos os métodos retornam um valor `PermissionStatus`:
+
+| Valor | Significado |
+|-------|-------------|
+| `.granted` | Permissão concedida |
+| `.pendingAction` | Negada ou parcial — usuário deve acessar as Configurações |
+| `.restricted` | Restrita por MDM ou controle parental; não pode ser alterada pelo usuário |
+| `.denied` | Ainda não determinada |
+
+**Verificar status atual (sem exibir diálogo do sistema)**
+
+```swift
+let locationStatus  = try await FinderManager.shared.checkLocationPermission()
+let bluetoothStatus = try await FinderManager.shared.checkBluetoothPermission()
+```
+
+**Solicitar permissões**
+
+```swift
+let locationStatus  = try await FinderManager.shared.requestLocationPermission()
+let bluetoothStatus = try await FinderManager.shared.requestBluetoothPermission()
+```
+
+> `requestLocationPermission()` trata o fluxo de upgrade `authorizedWhenInUse` → `authorizedAlways` abrindo a página de Configurações do app e resolvendo após o retorno do usuário. Ambos os métodos suportam cancelamento via `Task`.
+
+> O SDK nunca solicita permissões de forma autônoma. Cabe ao app host chamar esses métodos no momento adequado.
 
 ## Suporte
 
