@@ -30,12 +30,16 @@ let package = Package(
             url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git",
             from: "3.8.0"
         ),
+        .package(
+            url: "https://github.com/emqx/CocoaMQTT.git",
+            from: "2.1.0"
+        ),
     ],
     targets: [
         .binaryTarget(
             name: "IoTracker",
-            url: "https://spm-sdk.technopartner.com.br/IoTracker/2.1.2/IoTracker.xcframework.zip",
-            checksum: "516d5854a5e2f99684ffe856cda68fb13ab2727f31b053cfcff33b5d705b46a1"
+            url: "https://spm-sdk.technopartner.com.br/IoTracker/2.1.3/IoTracker.xcframework.zip",
+            checksum: "fd8969c6b3fd85391870917c378afdbfc2910901256524505a8884d1f0b5dd9b"
         ),
         .target(
             name: "IoTrackerDependencies",
@@ -45,6 +49,7 @@ let package = Package(
                 .product(name: "KeychainSwift", package: "keychain-swift"),
                 .product(name: "CocoaLumberjack", package: "CocoaLumberjack"),
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "CocoaMQTT", package: "CocoaMQTT"),
             ],
             path: "Sources/IoTrackerDependencies"
         ),
