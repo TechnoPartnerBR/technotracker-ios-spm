@@ -15,8 +15,8 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/chamira-at/RxBluetoothKit.git",
-            branch: "ios-15-support"
+            url: "https://github.com/TechnoPartnerBR/RxBluetoothKit.git",
+            exact: "6.0.0-ios15"
         ),
         .package(
             url: "https://github.com/krzyzanowskim/CryptoSwift.git",
@@ -38,8 +38,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "IoTracker",
-            url: "https://spm-sdk.technopartner.com.br/IoTracker/2.1.3/IoTracker.xcframework.zip",
-            checksum: "fd8969c6b3fd85391870917c378afdbfc2910901256524505a8884d1f0b5dd9b"
+            url: "https://spm-sdk.technopartner.com.br/IoTracker/2.1.4/IoTracker.xcframework.zip",
+            checksum: "90ddd5263ddf8fe2b3ad5dabe7dd6423d783f409b85e5bc344f08427bc2335a4"
         ),
         .target(
             name: "IoTrackerDependencies",

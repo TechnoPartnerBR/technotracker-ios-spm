@@ -35,9 +35,11 @@ machine spm-sdk.technopartner.com.br
 
 > **Nota**: Atualmente não é possível selecionar uma versão específica para a dependência. 
 
-### Passo 3: Inicializar o SDK
+### Passo 3: Inicializar e iniciar o SDK
 
 Importe o modulo e inicialize o SDK no `AppDelegate` utilizando `FinderManager`:
+
+> **Importante:** `setup()` é um método síncrono. Chame-o diretamente em `application(_:didFinishLaunchingWithOptions:)` — **não** envolva em `Task { await ... }`.
 
 ```swift
 import IoTracker
@@ -55,6 +57,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         let config = IoTrackerConfiguration(apiKey: "token-fornecido-pela-technopartner")
         FinderManager.shared.setup(configuration: config, launchOptions: launchOptions)
+
+        // Na primeira instalação: use startExplicit() para ativar o SDK.
+        // Nos lançamentos seguintes: start() retoma a execução automaticamente se já foi ativado.
+        FinderManager.shared.start()
+
         return true
     }
 }
@@ -65,6 +72,48 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 | Parametro | Descricao | Padrao |
 |-----------|-----------|--------|
 | `apiKey` | Token criptografado (obrigatorio) | — |
+
+### Ciclo de vida do SDK
+
+O ciclo de vida é dividido em duas fases independentes: **configuração** (`setup`) e **execução** (`start`/`stop`).
+
+| Método | Descrição |
+|--------|-----------|
+| `setup(configuration:launchOptions:)` | Configura o SDK e inicializa os objetos internos. **Não** inicia nenhuma execução reativa. Deve ser chamado na main thread em `application(_:didFinishLaunchingWithOptions:)`. |
+| `startExplicit()` | Inicia todas as features do SDK e **persiste** o estado iniciado. Chame uma vez para ativar o SDK pela primeira vez. Nos lançamentos seguintes, use `start()`. |
+| `start()` | Inicia as features apenas se `startExplicit()` já tiver sido chamado em uma sessão anterior. Não faz nada caso contrário. |
+| `stop()` | Para todas as features e **persiste** o estado parado. Após `stop()`, `start()` será um no-op até que `startExplicit()` seja chamado novamente. |
+| `isRunning` | `true` enquanto as features estão em execução na **sessão atual**. Resetado para `false` a cada novo lançamento até que `start()` ou `startExplicit()` seja chamado. |
+
+#### Padrões de uso
+
+**Primeira instalação:**
+
+```swift
+FinderManager.shared.setup(configuration: config, launchOptions: launchOptions)
+FinderManager.shared.startExplicit()   // persiste a intenção + inicia as features
+```
+
+**Lançamentos seguintes:**
+
+```swift
+FinderManager.shared.setup(configuration: config, launchOptions: launchOptions)
+FinderManager.shared.start()   // no-op se nunca foi ativado explicitamente
+```
+
+**Parar o SDK (ex: logout do usuário):**
+
+```swift
+FinderManager.shared.stop()   // para as features + limpa a intenção persistida
+```
+
+**Verificar estado em tempo de execução:**
+
+```swift
+if FinderManager.shared.isRunning {
+    // features em execução
+}
+```
 
 ### Passo 4: Registrar ID da antena
 
