@@ -38,8 +38,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "IoTracker",
-            url: "https://spm-sdk.technopartner.com.br/IoTracker/2.1.5/IoTracker.xcframework.zip",
-            checksum: "5125729b48806c2cd1c2183d3d15fc43c5d8ac40400bdb499477b82bbb091c02"
+            url: "https://spm-sdk.technopartner.com.br/IoTracker/2.1.6/IoTracker.xcframework.zip",
+            checksum: "a00aeef855f730e91fa946ae9bab94ee4509e5c492e90793573e29114041a7bb"
         ),
         .target(
             name: "IoTrackerDependencies",
