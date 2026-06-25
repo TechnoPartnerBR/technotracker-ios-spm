@@ -10,48 +10,24 @@ let package = Package(
     products: [
         .library(
             name: "IoTracker",
-            targets: ["IoTracker", "IoTrackerDependencies"]
+            targets: ["IoTracker"]
         ),
     ],
-    dependencies: [
-        .package(
-            url: "https://github.com/TechnoPartnerBR/RxBluetoothKit.git",
-            exact: "6.0.0-ios15"
-        ),
-        .package(
-            url: "https://github.com/krzyzanowskim/CryptoSwift.git",
-            from: "1.7.2"
-        ),
-        .package(
-            url: "https://github.com/evgenyneu/keychain-swift.git",
-            from: "19.0.0"
-        ),
-        .package(
-            url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git",
-            from: "3.8.0"
-        ),
-        .package(
-            url: "https://github.com/emqx/CocoaMQTT.git",
-            from: "2.1.0"
-        ),
-    ],
+    // No package dependencies are declared for consumers: the IoTracker
+    // XCFramework statically embeds all of its SPM dependencies
+    // (RxBluetoothKit, RxSwift, CryptoSwift, KeychainSwift, CocoaLumberjack,
+    // CocoaMQTT) into its binary and is fully self-contained (NOUNDEFS).
+    // A previous shim target (IoTrackerDependencies) re-declared them so
+    // consumers linked them again, which registered every Obj-C class twice
+    // and produced "Class ... is implemented in both ..." warnings (TP-7555).
+    // The build script strips the now-orphaned dependency imports from the
+    // .swiftinterface, so consumers compile against the binary without
+    // needing the packages at all.
     targets: [
         .binaryTarget(
             name: "IoTracker",
-            url: "https://spm-sdk.technopartner.com.br/IoTracker/2.1.6/IoTracker.xcframework.zip",
-            checksum: "a00aeef855f730e91fa946ae9bab94ee4509e5c492e90793573e29114041a7bb"
-        ),
-        .target(
-            name: "IoTrackerDependencies",
-            dependencies: [
-                .product(name: "RxBluetoothKit", package: "RxBluetoothKit"),
-                .product(name: "CryptoSwift", package: "CryptoSwift"),
-                .product(name: "KeychainSwift", package: "keychain-swift"),
-                .product(name: "CocoaLumberjack", package: "CocoaLumberjack"),
-                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-                .product(name: "CocoaMQTT", package: "CocoaMQTT"),
-            ],
-            path: "Sources/IoTrackerDependencies"
+            url: "https://spm-sdk.technopartner.com.br/IoTracker/2.1.7/IoTracker.xcframework.zip",
+            checksum: "add35e5ad273d4c080c2e76bcc1a0a7b7ce2e339f2eb606c84fea3aac47fd686"
         ),
     ]
 )
